@@ -48,7 +48,7 @@ module control_unit(
          ALU_I:begin
             alu_src   = 1'b1;
             mem_2_reg = 1'b0;
-            reg_write = 1'b0;
+            reg_write = 1'b1;
             mem_read  = 1'b0;
             mem_write = 1'b0;
             branch    = 1'b0;
@@ -57,7 +57,7 @@ module control_unit(
          end
 
          BRANCH_EQ:begin
-            alu_src   = 1'b1;//?
+            alu_src   = 1'b1;
             mem_2_reg = 1'b0;
             reg_write = 1'b0;
             mem_read  = 1'b0;
