@@ -1,5 +1,5 @@
 ncverilog(64): 15.20-s058: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
-TOOL:	ncverilog	15.20-s058: Started on Apr 28, 2023 at 09:38:40 CEST
+TOOL:	ncverilog	15.20-s058: Started on Apr 28, 2023 at 11:48:21 CEST
 ncverilog
 	+sv
 	-f files_verilog.f
@@ -21,25 +21,25 @@ ncverilog
 	+nctimescale+1ns/10ps
 	+access+rwc
 	-ALLOWREDEFINITION
-Recompiling... reason: file '../Verilog/RTL/control_unit.v' is newer than expected.
-	expected: Fri Apr 28 09:34:29 2023
-	actual:   Fri Apr 28 09:37:40 2023
-file: ../Verilog/RTL/control_unit.v
-	module worklib.control_unit:v
+Recompiling... reason: file '../Verilog/RTL/alu_control.v' is newer than expected.
+	expected: Fri Apr 28 11:08:14 2023
+	actual:   Fri Apr 28 11:37:58 2023
+file: ../Verilog/RTL/alu_control.v
+	module worklib.alu_control:v
 		errors: 0, warnings: 0
 		Caching library 'worklib' ....... Done
 	Elaborating the design hierarchy:
 ncelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
 	Building instance overlay tables: .................... Done
 	Generating native compiled code:
-		worklib.control_unit:v <0x7c4283f5>
-			streams:   1, words:  6601
+		worklib.alu_control:v <0x094a4bae>
+			streams:   3, words:   969
 	Building instance specific data structures.
 	Loading native compiled code:     .................... Done
 	Design hierarchy summary:
 		                  Instances  Unique
 		Modules:                 19      16
-		Registers:              105     102
+		Registers:              106     103
 		Scalar wires:            33       -
 		Expanded wires:          32       1
 		Vectored wires:          40       -
@@ -56,29 +56,43 @@ ncsim> run
 
 Start Execution
 
-[1;34m
-Working Correctly:                         ADDI(x8)
+[1;31m
+Error in Mult2 function
 [0m
-[1;34m
-Working Correctly:                         ADDI(x9)
-[0m
-[1;34m
-Working Correctly:                               SD
-[0m
-[1;34m
-Working Correctly:                               LD
-[0m
-[1;34m
-Working Correctly:                              ADD
-[0m
-[1;34m
-Working Correctly:                              BEQ
-[0m
-[1;34m
-Working Correctly:                              SLL
-[0m
-         10 cycles
-Simulation complete via $finish(1) at time 29450 NS + 8
+Debug info, reg_array[          0]: 0000000000000000
+Debug info, reg_array[          1]: 0000000000000000
+Debug info, reg_array[          2]: 0000000000000000
+Debug info, reg_array[          3]: 0000000000000000
+Debug info, reg_array[          4]: 0000000000000000
+Debug info, reg_array[          5]: 0000000000000000
+Debug info, reg_array[          6]: 0000000000000000
+Debug info, reg_array[          7]: 0000000000000000
+Debug info, reg_array[          8]: 0000000000000001
+Debug info, reg_array[          9]: 0000000000000002
+Debug info, reg_array[         10]: 0000000000000003
+Debug info, reg_array[         11]: 0000000000000004
+Debug info, reg_array[         12]: 0000000000000005
+Debug info, reg_array[         13]: 0000000000000006
+Debug info, reg_array[         14]: 0000000000000007
+Debug info, reg_array[         15]: 0000000000000008
+Debug info, reg_array[         16]: 0000000000000009
+Debug info, reg_array[         17]: 000000000000000a
+Debug info, reg_array[         18]: 0000000000000003
+Debug info, reg_array[         19]: 0000000000000007
+Debug info, reg_array[         20]: 000000000000000b
+Debug info, reg_array[         21]: 000000000000000f
+Debug info, reg_array[         22]: 0000000000000013
+Debug info, reg_array[         23]: 0000000000000037
+Debug info, reg_array[         24]: 0000000000000000
+Debug info, reg_array[         25]: 0000000000000000
+Debug info, reg_array[         26]: 0000000000000000
+Debug info, reg_array[         27]: 0000000000000000
+Debug info, reg_array[         28]: 0000000000000000
+Debug info, reg_array[         29]: 0000000000000000
+Debug info, reg_array[         30]: 0000000000000000
+Debug info, reg_array[         31]: 0000000000000000
+         40 cycles
+Simulation complete via $finish(1) at time 32450 NS + 8
 ../Verilog/cpu_tb.v:324    $finish;
 ncsim> exit
-TOOL:	ncverilog	15.20-s058: Exiting on Apr 28, 2023 at 09:38:40 CEST  (total: 00:00:00)
+TOOL:	ncverilog	15.20-s058: Exiting on Apr 28, 2023 at 11:48:24 CEST  (total: 00:00:03)
