@@ -57,6 +57,44 @@ immediate_extend_unit immediate_extend_u(
     .immediate_extended  (immediate_extended)
 );
 
+//declare registers here
+reg  [63:0]  IF_ID1;
+reg  [31:0]  IF_ID2;
+reg          ID_EX_WB;
+reg          ID_EX_M;
+reg          ID_EX_EX;
+reg  [63:0]  ID_EX1;
+reg  [63:0]  ID_EX2;
+reg  [63:0]  ID_EX3;
+reg  [63:0]  ID_EX4;
+reg  [4:0]   ID_EX5;
+reg  [4:0]   ID_EX6;
+reg          EX_MEM_WB;
+reg          EX_MEM_M;
+reg          EX_MEM_Z;
+reg  [63:0]  EX_MEM1;
+reg  [63:0]  EX_MEM2;
+reg  [63:0]  EX_MEM3;
+reg  [4:0]  EX_MEM4;
+reg         MEM_WB_WB;
+reg  [63:0]  MEM_WB1;
+reg  [63:0]  MEM_WB2;
+reg  [4:0]   MEM_WB3;
+
+always@(posedge clk)
+begin
+   IF_ID1 <= updated_pc;
+   ID_EX1 <= IF_ID1;
+   IF_ID2 <= instruction;
+   // control lines needed here
+   ID_EX2 <= regfile_rdata_1;
+   ID_EX3 <= regfile_rdata_2;
+   ID_EX4 <= immediate_extended;
+   ID_EX5 <= {IF_ID2[30],IF_ID2[25],IF_ID2[14:12]};
+   ID_EX6 <= IF_ID2[11:7];
+
+end
+
 pc #(
    .DATA_W(64)
 ) program_counter (
@@ -105,7 +143,7 @@ sram_BW64 #(
 );
 
 control_unit control_unit(
-   .opcode   (instruction[6:0]),
+   .opcode   (IF_ID2[6:0]),
    .alu_op   (alu_op          ),
    .reg_dst  (reg_dst         ),
    .branch   (branch          ),
@@ -123,17 +161,17 @@ register_file #(
    .clk      (clk               ),
    .arst_n   (arst_n            ),
    .reg_write(reg_write         ),
-   .raddr_1  (instruction[19:15]),
-   .raddr_2  (instruction[24:20]),
-   .waddr    (instruction[11:7] ),
+   .raddr_1  (IF_ID2[19:15]),
+   .raddr_2  (IF_ID2[24:20]),
+   .waddr    ( ),
    .wdata    (regfile_wdata     ),
    .rdata_1  (regfile_rdata_1   ),
    .rdata_2  (regfile_rdata_2   )
 );
 
 alu_control alu_ctrl(
-   .func7_5_0        ({instruction[30],instruction[25]}),
-   .func3          (instruction[14:12]),
+   .func7_5_0        (ID_EX5[4:3]),
+   .func3          (ID_EX5[2:0]),
    .alu_op         (alu_op            ),
    .alu_control    (alu_control       )
 );
@@ -141,7 +179,7 @@ alu_control alu_ctrl(
 mux_2 #(
    .DATA_W(64)
 ) alu_operand_mux (
-   .input_a (immediate_extended),
+   .input_a (ID_EX4),
    .input_b (regfile_rdata_2    ),
    .select_a(alu_src           ),
    .mux_out (alu_operand_2     )
@@ -170,8 +208,8 @@ mux_2 #(
 branch_unit#(
    .DATA_W(64)
 )branch_unit(
-   .updated_pc         (updated_pc        ),
-   .immediate_extended (immediate_extended),
+   .updated_pc         (ID_EX1),
+   .immediate_extended (ID_EX4),
    .branch_pc          (branch_pc         ),
    .jump_pc            (jump_pc           )
 );
