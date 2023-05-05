@@ -1,5 +1,5 @@
 ncverilog(64): 15.20-s058: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
-TOOL:	ncverilog	15.20-s058: Started on Apr 28, 2023 at 12:17:15 CEST
+TOOL:	ncverilog	15.20-s058: Started on May 05, 2023 at 12:46:14 CEST
 ncverilog
 	+sv
 	-f files_verilog.f
@@ -21,37 +21,6 @@ ncverilog
 	+nctimescale+1ns/10ps
 	+access+rwc
 	-ALLOWREDEFINITION
-Recompiling... reason: file '../Verilog/RTL/alu_control.v' is newer than expected.
-	expected: Fri Apr 28 12:05:42 2023
-	actual:   Fri Apr 28 12:16:27 2023
-file: ../Verilog/RTL/cpu.v
-	module worklib.cpu:v
-		errors: 0, warnings: 0
-		Caching library 'worklib' ....... Done
-	Elaborating the design hierarchy:
-ncelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
-	Building instance overlay tables: .................... Done
-	Generating native compiled code:
-		worklib.alu_control:v <0x440c42be>
-			streams:   3, words:   945
-		worklib.cpu:v <0x6dbb951a>
-			streams:   9, words:  1229
-		worklib.cpu_tb:v <0x43cde2d1>
-			streams:  27, words: 53827
-	Building instance specific data structures.
-	Loading native compiled code:     .................... Done
-	Design hierarchy summary:
-		                  Instances  Unique
-		Modules:                 19      16
-		Registers:              106     103
-		Scalar wires:            33       -
-		Vectored wires:          47       -
-		Always blocks:           42      39
-		Initial blocks:           3       3
-		Cont. assignments:        2       5
-		Pseudo assignments:      37      37
-		Simulation timescale:  10ps
-	Writing initial simulation snapshot: worklib.reg_arstn:v
 Loading snapshot worklib.reg_arstn:v .................... Done
 ncsim: *W,DSEM2009: This SystemVerilog design is simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
 ncsim> source /esat/micas-data/software/Cadence/incisiv_15.20.058/tools/inca/files/ncsimrc
@@ -66,4 +35,4 @@ Mult2 Working Correctly
 Simulation complete via $finish(1) at time 32450 NS + 8
 ../Verilog/cpu_tb.v:324    $finish;
 ncsim> exit
-TOOL:	ncverilog	15.20-s058: Exiting on Apr 28, 2023 at 12:17:17 CEST  (total: 00:00:02)
+TOOL:	ncverilog	15.20-s058: Exiting on May 05, 2023 at 12:46:14 CEST  (total: 00:00:00)
