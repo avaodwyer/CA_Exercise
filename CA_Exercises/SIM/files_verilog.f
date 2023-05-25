@@ -12,4 +12,4 @@
 ../Verilog/RTL/sram.v
 ../Verilog/cpu_tb.v
 ../Verilog/sky130_sram_2rw.v
-
+../Verilog/RTL/forwarding_unit.v

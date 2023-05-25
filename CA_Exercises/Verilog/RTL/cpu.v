@@ -76,6 +76,8 @@ wire  [63:0]  ID_EX3;
 wire  [63:0]  ID_EX4;
 wire  [4:0]   ID_EX5;
 wire  [4:0]   ID_EX6;
+wire  [4:0]   ID_EX_Rs1;
+wire  [4:0]   ID_EX_Rs2;
 wire          EX_MEM_WB;
 wire          EX_MEM_M;
 wire          EX_MEM_Z;
@@ -90,7 +92,8 @@ wire  [63:0]  MEM_WB2;
 wire  [4:0]   MEM_WB3;
 
 wire signed [63:0] immediate_extended;
-
+wire [1:0] mux_con_1;
+wire [1:0] mux_con_2;
 
 reg_arstn_en#(
     .DATA_W(96)
@@ -103,14 +106,16 @@ reg_arstn_en#(
 );
 
 
+
+
 reg_arstn_en#(
-    .DATA_W(274)
+    .DATA_W(284)
 )ID_EX(
     .clk(clk),
     .arst_n(arst_n),
-    .din({alu_src,alu_op,branch,mem_write,mem_read,mem_2_reg,reg_write,IF_ID1,regfile_rdata_1,regfile_rdata_2,immediate_extended,IF_ID2[30],IF_ID2[25],IF_ID2[14:12],IF_ID2[11:7]}),
+    .din({alu_src,alu_op,branch,mem_write,mem_read,mem_2_reg,reg_write,IF_ID1,regfile_rdata_1,regfile_rdata_2,immediate_extended,IF_ID2[30],IF_ID2[25],IF_ID2[14:12],IF_ID2[11:7],IF_ID2[19:15],IF_ID2[24:20]}),
     .en(enable),
-    .dout({ID_EX_ALUSrc,ID_EX_ALUOp,ID_EX_Branch,ID_EX_MemWrite,ID_EX_MemRead,ID_EX_MemtoReg,ID_EX_RegWrite,ID_EX1,ID_EX2,ID_EX3,ID_EX4,ID_EX5,ID_EX6})
+    .dout({ID_EX_ALUSrc,ID_EX_ALUOp,ID_EX_Branch,ID_EX_MemWrite,ID_EX_MemRead,ID_EX_MemtoReg,ID_EX_RegWrite,ID_EX1,ID_EX2,ID_EX3,ID_EX4,ID_EX5,ID_EX6,ID_EX_Rs1,ID_EX_Rs2})
 );
 
 reg_arstn_en#(
@@ -155,6 +160,85 @@ pc #(
    .enable    (enable    ),
    .updated_pc(updated_pc)
 );
+
+forwarding_unit #()
+   forwarding_unit(
+    .clk     (clk),
+    .ID_EX_Rs1    (ID_EX_Rs1),
+    .ID_EX_Rs2   (ID_EX_Rs2),
+    .EX_MEM_Rd   (EX_MEM4),
+    .MEM_WB_Rd   (MEM_WB3),
+    .MEM_WB_RegWrite   (MEM_WB_RegWrite),
+    .EX_MEM_RegWrite   (EX_MEM_RegWrite),
+    .mux_con_1(mux_con_1),
+    .mux_con_2(mux_con_2)
+);
+
+wire [63:0] mux_out_1_a;
+wire [63:0] mux_out_2_a;
+wire [63:0] mux_out_1_b;
+wire [63:0] mux_out_2_b;
+mux_2 #(
+   .DATA_W(64)
+) alu_mux_1_1 (
+   .input_a  (regfile_wdata),
+   .input_b  (ID_EX2),
+   .select_a (mux_con_1[1]),
+   .mux_out  (mux_out_1_a)
+);
+
+
+mux_2 #(
+   .DATA_W(64)
+) alu_mux_1_2 (
+   .input_b  (mux_out_1_a),
+   .input_a  (EX_MEM2),
+   .select_a (mux_con_1[0]),
+   .mux_out  (mux_out_1_b)
+);
+
+mux_2 #(
+   .DATA_W(64)
+) alu_mux_2_1 (
+   .input_b  (ID_EX3),
+   .input_a  (regfile_wdata),
+   .select_a (mux_con_2[1]),
+   .mux_out  (mux_out_2_a)
+);
+
+
+mux_2 #(
+   .DATA_W(64)
+) alu_mux_2_2 (
+   .input_b  (mux_out_2_a),
+   .input_a  (EX_MEM2),
+   .select_a (mux_con_2[0]),
+   .mux_out  (mux_out_2_b)
+);
+
+/*
+hazard_detection #(
+) hazard_detection(
+   .ID_EX_Mem_Read (),
+   .ID_EX_Rd(),
+   .IF_ID_Rs1(),
+   .IF_ID_Rs2(),
+   .pick_bubble()
+
+);
+
+
+mux_2 #(
+   .DATA_W(7)
+) Haz_det_mux (
+   .input_b  (), // Bubble
+   .input_a  (), // control line
+   .select_a (), // Pick Bubble 0 if bubble, 1 if want control line
+   .mux_out  () // into ID EX stage
+);
+
+*/
+
 
 sram_BW32 #(
    .ADDR_W(9 )
@@ -226,7 +310,7 @@ mux_2 #(
    .DATA_W(64)
 ) alu_operand_mux (
    .input_a (ID_EX4),
-   .input_b (ID_EX3    ),
+   .input_b (mux_out_2_b ),
    .select_a(ID_EX_ALUSrc       ),
    .mux_out (alu_operand_2     )
 );
@@ -234,7 +318,7 @@ mux_2 #(
 alu#(
    .DATA_W(64)
 ) alu(
-   .alu_in_0 (ID_EX2 ),
+   .alu_in_0 (mux_out_1_b ),
    .alu_in_1 (alu_operand_2   ),
    .alu_ctrl (alu_control     ),
    .alu_out  (alu_out         ),
