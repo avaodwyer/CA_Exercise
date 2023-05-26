@@ -68,7 +68,8 @@ wire          EX_MEM_MemtoReg;
 wire          EX_MEM_RegWrite;
 wire          MEM_WB_MemtoReg;
 wire          MEM_WB_RegWrite;
-
+wire          EX_MEM_jump;
+wire          ID_EX_jump;
 
 wire  [63:0]  ID_EX1;
 wire  [63:0]  ID_EX2;
@@ -109,23 +110,23 @@ reg_arstn_en#(
 
 
 reg_arstn_en#(
-    .DATA_W(284)
+    .DATA_W(285)
 )ID_EX(
     .clk(clk),
     .arst_n(arst_n),
-    .din({alu_src,alu_op,branch,mem_write,mem_read,mem_2_reg,reg_write,IF_ID1,regfile_rdata_1,regfile_rdata_2,immediate_extended,IF_ID2[30],IF_ID2[25],IF_ID2[14:12],IF_ID2[11:7],IF_ID2[19:15],IF_ID2[24:20]}),
+    .din({alu_src,alu_op,branch,mem_write,mem_read,mem_2_reg,reg_write,jump,IF_ID1,regfile_rdata_1,regfile_rdata_2,immediate_extended,IF_ID2[30],IF_ID2[25],IF_ID2[14:12],IF_ID2[11:7],IF_ID2[19:15],IF_ID2[24:20]}),
     .en(enable),
-    .dout({ID_EX_ALUSrc,ID_EX_ALUOp,ID_EX_Branch,ID_EX_MemWrite,ID_EX_MemRead,ID_EX_MemtoReg,ID_EX_RegWrite,ID_EX1,ID_EX2,ID_EX3,ID_EX4,ID_EX5,ID_EX6,ID_EX_Rs1,ID_EX_Rs2})
+    .dout({ID_EX_ALUSrc,ID_EX_ALUOp,ID_EX_Branch,ID_EX_MemWrite,ID_EX_MemRead,ID_EX_MemtoReg,ID_EX_RegWrite,ID_EX_jump,ID_EX1,ID_EX2,ID_EX3,ID_EX4,ID_EX5,ID_EX6,ID_EX_Rs1,ID_EX_Rs2})
 );
 
 reg_arstn_en#(
-    .DATA_W(267)
+    .DATA_W(268)
 )EX_MEM(
     .clk(clk),
     .arst_n(arst_n),
-    .din({zero_flag,ID_EX_Branch,ID_EX_MemWrite,ID_EX_MemRead,ID_EX_MemtoReg,ID_EX_RegWrite,branch_pc,jump_pc,alu_out,ID_EX3,ID_EX6}),
+    .din({zero_flag,ID_EX_Branch,ID_EX_MemWrite,ID_EX_MemRead,ID_EX_MemtoReg,ID_EX_RegWrite,ID_EX_jump,branch_pc,jump_pc,alu_out,ID_EX3,ID_EX6}),
     .en(enable),
-    .dout({EX_MEM_Zflag,EX_MEM_Branch,EX_MEM_MemWrite,EX_MEM_MemRead,EX_MEM_MemtoReg,EX_MEM_RegWrite,EX_MEM1_1,EX_MEM1_2,EX_MEM2,EX_MEM3,EX_MEM4})
+    .dout({EX_MEM_Zflag,EX_MEM_Branch,EX_MEM_MemWrite,EX_MEM_MemRead,EX_MEM_MemtoReg,EX_MEM_RegWrite,EX_MEM_jump,EX_MEM1_1,EX_MEM1_2,EX_MEM2,EX_MEM3,EX_MEM4})
 );
 
 reg_arstn_en#(
@@ -155,7 +156,7 @@ pc #(
    .jump_pc   (EX_MEM1_2 ),
    .zero_flag (EX_MEM_Zflag ),
    .branch    (EX_MEM_Branch    ),
-   .jump      (jump      ),
+   .jump      (EX_MEM_jump      ),
    .current_pc(current_pc),
    .enable    (enable    ),
    .updated_pc(updated_pc)
